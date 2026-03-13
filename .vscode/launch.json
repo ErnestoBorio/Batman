@@ -13,8 +13,7 @@
 			],
 			"program": "${workspaceFolder}/index.js",
 			"args": [
-				"bm",
-				"235"
+				"417", "236", "50"
 			]
 		}
 	]
