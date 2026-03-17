@@ -10,20 +10,28 @@
 	const batman_no = parseInt(process.argv[3]);
 	const count_to = parseInt(process.argv[4]);
 	let issues = [];
+	let promises = [];
 
 	for (let i = dc_no; i < dc_no + count_to / 2; i++) {
-		const dc = await getIssue("Detective_Comics_Vol_1", i);
-		issues.push({ ...dc, string: `DetCom ${i} - ${dc.year} ${dc.month}` });
-	}
-
-	for (let i = batman_no; i < batman_no + count_to / 2; i++) {
-		const batman = await getIssue("Batman_Vol_1", i);
-		issues.push({
-			...batman,
-			string: `Batman ${i} - ${batman.year} ${batman.month}`,
+		let promise = getIssue("Detective_Comics_Vol_1", i);
+		promises.push(promise);
+		promise.then((dc) => {
+			issues.push({ ...dc, string: `DetCom ${i} - ${dc.year} ${dc.month}` });
 		});
 	}
 
+	for (let i = batman_no; i < batman_no + count_to / 2; i++) {
+		let promise = getIssue("Batman_Vol_1", i);
+		promises.push(promise);
+		promise.then((batman) => {
+			issues.push({
+				...batman,
+				string: `Batman ${i} - ${batman.year} ${batman.month}`,
+			});
+		});
+	}
+
+	await Promise.all(promises);
 	issues.sort((a, b) => {
 		return (
 			new Date(`${a.month} 1, ${a.year}`) -
